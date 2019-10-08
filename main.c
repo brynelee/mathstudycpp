@@ -3,6 +3,7 @@
 //
 
 #include <stdio.h>
+#include <math.h>
 
 float Q_rsqrt( float number )
 {
@@ -12,22 +13,23 @@ float Q_rsqrt( float number )
 
     x2 = number * 0.5F;
     y  = number;
-    i  = * ( long * ) &y;						// evil floating point bit level hacking
+    i  = * ( long * ) &y;                       // evil floating point bit level hacking
     i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
     y  = * ( float * ) &i;
     y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-//	y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+//    y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
 
-#ifndef Q3_VM
-#ifdef __linux__
-    assert( !isnan(y) ); // bk010122 - FPE?
-#endif
-#endif
     return y;
 }
 
 void main(){
-    int i = 50;
-    float sofi = Q_rsqrt(i);
-    printf("the square of i is: %d", sofi);
+    float x = 567890567890;
+    float q_rsqrt = Q_rsqrt(x);
+    float q_sqrt = 1 / q_rsqrt;
+    printf("the inverse square root of i is: %f\n", q_rsqrt);
+    printf("the square root of x is: %f\n", q_sqrt);
+
+    double y = 567890567890;
+    double sqrtofy = sqrt(y);
+    printf("the square root of y (%f) is: %f", y, sqrtofy);
 }
